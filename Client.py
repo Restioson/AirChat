@@ -2,7 +2,7 @@ import socket
 import tkinter.simpledialog
 from tkinter import *
 import _thread as thread
-import sys
+import sys, os, time
 import tkinter.messagebox
 
 s = socket.socket()
@@ -26,20 +26,36 @@ p=print
 p("Setting title...")
 master.wm_title("AirChat 1.2")
 def key(event):
-    print("pressed", repr(event.char))
+	print("pressed", repr(event.char))
 
 def listen(bytes,ARG):
 
 	while True:
 		p("listening...")
-		DAT = str(s.recv(bytes))
-		text.config(state=NORMAL)
-		DAT = DAT.replace("'","").replace("b","",2).replace('"',"")
-		DAT = DAT.replace('"',"")
-		text.insert(END,DAT)
-		text.insert(END,"\n")
-		text.config(state=DISABLED)
-		print(DAT)
+		try:
+			DAT = str(s.recv(bytes))
+			DAT = DAT.replace("'","").replace("b","",2).replace('"',"")
+			DAT = DAT.replace('"',"")
+			text.insert(END,DAT)
+			text.insert(END,"\n")
+			text.config(state=DISABLED)
+			print(DAT)
+			text.config(state=NORMAL)
+		except socket.error:
+			tkinter.messagebox.showerror("Disconnected","The server has crashed or been shut down")
+			quitclient = tkinter.messagebox.askyesno("Runtime Error","Would you like to exit?")
+			if quitclient == False:
+				try:
+					os.system('python Client.py')
+					sys.exit(0)
+				except:
+					tkinter.messagebox.showerror("Operation Failed","Could not restart client")
+					time.sleep(10)
+					sys.exit(0)
+
+			if quitclient == True:
+				sys.exit(0)
+
 		#Do something with the data
 
 def callback():

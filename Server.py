@@ -33,7 +33,7 @@ def handler(clientsock,addr):
 				i.send((USERNAME+":"+data).encode('utf-8'))	
 			if "~" in data:
 				try:
-					USERNAME = ("<"+data.replace("b'",'',1).replace("'",'').replace('~','',1)+">")
+					USERNAME = ("<"+data.replace("b'",'',1).replace("'",'').replace('~','',1)+">".replace(' ','',1))
 					if USERNAME in ul:
 						USERNAME = "<"+gethostbyaddr(addr[0])[0]+">"
 						clientsock.send("<Alert> Username Taken. Reseting username to hostname...".encode("utf-8"))
