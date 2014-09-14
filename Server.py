@@ -4,10 +4,11 @@
 from socket import *
 import _thread as thread
 import time
+import ssl
 
 #Set the buffersize, hostname and port
 BUFF = 1024
-HOST = 'localhost'
+HOST = '0.0.0.0'
 PORT = 65000
 
 #Create a username list and socket list
@@ -26,6 +27,8 @@ def handler(clientsock,addr):
 		try:
 			data = str(clientsock.recv(BUFF))
 		except:
+			data = ""
+		if not data:
 			list.pop(list.index(clientsock))
 			if USERNAME == gethostbyaddr(addr[0]):
 				pass
@@ -39,14 +42,14 @@ def handler(clientsock,addr):
 			if joinnew == True:
 				i.send((USERNAME+" joined the server.").encode('utf-8')) #Say they just joined
 				joinnew = False
-			repr(list)
-			print('data:' + repr(data))
-			repr(list)
 			if not data:
 				break
 			if "~" not in data:
-				i.send((USERNAME+":"+data).encode('utf-8'))	
-			#Change thier name if there is a '~' in front
+				if i == clientsock:
+					pass
+				else:
+					i.send((USERNAME+":"+data).encode('utf-8'))	
+			#Change their name if there is a '~' in front
 			if "~" in data:
 				try:
 					USERNAME = ("<"+data.replace("b'",'',1).replace("'",'').replace('~','',1)+">".replace(' ','',1))
@@ -55,7 +58,7 @@ def handler(clientsock,addr):
 						clientsock.send("<Alert> Username Taken. Reseting username to hostname...".encode("utf-8"))
 					else:
 						ul.append(USERNAME)
-						i.send(("<"+gethostbyaddr(addr[0])[0]+">"+" has changed thier username to "+USERNAME).encode('utf-8'))
+						i.send(("<"+gethostbyaddr(addr[0])[0]+">"+" has changed their username to "+USERNAME).encode('utf-8'))
 				except:
 					clientsock.send("<Alert> Error.".encode("utf-8"))
 
@@ -65,6 +68,7 @@ if __name__=='__main__':
 	ADDR = (HOST, PORT)
 	serversock = socket(AF_INET, SOCK_STREAM)
 	serversock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+	serversock = ssl.wrap_socket(serversock, keyfile='cert.pem', certfile='cert.pem',server_side=True)
 	serversock.bind(ADDR)
 	serversock.listen(5)
 	while 1:
