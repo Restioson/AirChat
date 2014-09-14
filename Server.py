@@ -17,8 +17,7 @@ def handler(clientsock,addr):
 			data = str(clientsock.recv(BUFF))
 		except:
 			list.pop(list.index(clientsock))
-			if USERNAME != "<"+gethostbyaddr(addr[0])[0]+">":
-				ul.pop(ul.index(USERNAME))
+			ul.pop(ul.index(USERNAME))
 			break
 		for i in list:
 			if joinnew == True:
