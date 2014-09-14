@@ -38,9 +38,10 @@ def listen(bytes,ARG):
 			DAT = DAT.replace('"',"")
 			text.insert(END,DAT)
 			text.insert(END,"\n")
+			text.config(state=NORMAL)
 			text.config(state=DISABLED)
 			print(DAT)
-			text.config(state=NORMAL)
+
 		except socket.error:
 			tkinter.messagebox.showerror("Disconnected","The server has crashed or been shut down")
 			quitclient = tkinter.messagebox.askyesno("Runtime Error","Would you like to exit?")
