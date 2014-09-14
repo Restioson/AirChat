@@ -80,7 +80,7 @@ text.config(yscrollcommand=scrl.set)
 print("connect!")
 
 Name = tkinter.simpledialog.askstring('Username','Enter your username here:')
-s.send(("~ "+Name).encode('utf-8'))
+s.send(("~"+Name).encode('utf-8'))
 print("Done...")
 p(s.getpeername())
 
