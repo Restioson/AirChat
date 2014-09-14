@@ -36,9 +36,9 @@ def listen(bytes,ARG):
 			DAT = str(s.recv(bytes))
 			DAT = DAT.replace("'","").replace("b","",2).replace('"',"")
 			DAT = DAT.replace('"',"")
+			text.config(state=NORMAL)
 			text.insert(END,DAT)
 			text.insert(END,"\n")
-			text.config(state=NORMAL)
 			text.config(state=DISABLED)
 			print(DAT)
 
