@@ -34,14 +34,15 @@ def handler(clientsock,addr):
 			if "~" in data:
 				try:
 					USERNAME = ("<"+data.replace("b'",'',1).replace("'",'').replace('~','',1)+">")
+					if USERNAME in ul:
+						USERNAME = "<"+gethostbyaddr(addr[0])[0]+">"
+						clientsock.send("<Alert> Username Taken. Reseting username to hostname...".encode("utf-8"))
+					else:
+						ul.append(USERNAME)
+						i.send(("<"+gethostbyaddr(addr[0])[0]+">"+" has changed thier username to "+USERNAME).encode('utf-8'))
 				except:
 					clientsock.send("<Alert> Error.".encode("utf-8"))
-				if USERNAME in ul:
-					USERNAME = "<"+gethostbyaddr(addr[0])[0]+">"
-					clientsock.send("<Alert> Username Taken. Reseting username to hostname...".encode("utf-8"))
-				else:
-					ul.append(USERNAME)
-					i.send(("<"+gethostbyaddr(addr[0])[0]+">"+" has changed thier username to "+USERNAME).encode('utf-8'))
+
 
 if __name__=='__main__':
 	ADDR = (HOST, PORT)
