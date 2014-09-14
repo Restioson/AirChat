@@ -42,10 +42,6 @@ p=print
 p("Setting title...")
 master.wm_title("AirChat 1.2")
 
-#Dunno why this is here!
-#def key(event):
-#	print("pressed", repr(event.char))
-
 #Define the handler
 def listen(bytes,ARG):
 	while True:
@@ -60,16 +56,14 @@ def listen(bytes,ARG):
 		print(DAT)
 
 #Define the "send" button's function
-def callback():
-	s.send(E1.get().encode('utf-8'))
+def callback(event):
+	s.send(event.widget.get().encode('utf-8'))
 	E1.delete(0, END)
-
-#Create the button and display it
-b = Button(master, text="Send Message to Chat Room", command=callback,bd =4)
-b.pack(fill=X)
 
 #Create an entry widget to enter the chat text into
 E1 = Entry(master, bd =5)
+#Press enter to send text
+E1.bind('<Return>', callback)
 E1.pack(side = BOTTOM,fill=X)
 
 #Create the panel of text where the chat will be shown

@@ -7,7 +7,7 @@ import time
 
 #Set the buffersize, hostname and port
 BUFF = 1024
-HOST = '0.0.0.0'
+HOST = 'localhost'
 PORT = 65000
 
 #Create a username list and socket list
@@ -27,7 +27,10 @@ def handler(clientsock,addr):
 			data = str(clientsock.recv(BUFF))
 		except:
 			list.pop(list.index(clientsock))
-			ul.pop(ul.index(USERNAME))
+			if USERNAME == gethostbyaddr(addr[0]):
+				pass
+			else:
+				ul.pop(ul.index(USERNAME))
 			break
 		
 		#Send the other clients the current socket's messages
