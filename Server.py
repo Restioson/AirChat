@@ -18,6 +18,7 @@ ul = []
 #Handler for sockets
 def handler(clientsock,addr):
 	joinnew = True
+	userset = False
 	#Add them to the list of sockets
 	list.append(clientsock)
 	#Set their default username (hostname)
@@ -50,7 +51,7 @@ def handler(clientsock,addr):
 				else:
 					i.send((USERNAME+":"+data).encode('utf-8'))	
 			#Change their name if there is a '~' in front
-			if "~" in data:
+			if "~" in data and userset == False:
 				try:
 					USERNAME = ("<"+data.replace("b'",'',1).replace("'",'').replace('~','',1)+">".replace(' ','',1))
 					if USERNAME in ul:
@@ -59,6 +60,7 @@ def handler(clientsock,addr):
 					else:
 						ul.append(USERNAME)
 						i.send(("<"+gethostbyaddr(addr[0])[0]+">"+" has changed their username to "+USERNAME).encode('utf-8'))
+						userset = True
 				except:
 					clientsock.send("<Alert> Error.".encode("utf-8"))
 

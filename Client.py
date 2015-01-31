@@ -2,7 +2,7 @@
 
 
 #Imports
-import socket, ssl #New SSL
+import socket, ssl
 import tkinter.simpledialog
 from tkinter import *
 import _thread as thread
@@ -55,32 +55,10 @@ s = ssl.wrap_socket(s)
 master = Tk()
 master.withdraw()
 
-#Try to connect to the server
-while True:
-	try:
-		ip = tkinter.simpledialog.askstring('ChatServer','Enter the ChatServer IP:')
-		s.connect((ip,65000)) #Connect to the server on port 65000
-		break
-	except:
-		tkinter.messagebox.showerror("ConnectError","Can't connect!") #Cannot connect, reconnect or exit?
-		ss = tkinter.messagebox.askyesno("Runtime Error","Would you like to exit?")
-		if ss == True:
-			sys.exit(0) #Exit
-		
-		else:
-			pass #Reconnect
-
-#Show the TK window
-master.update()
-master.deiconify()
-
-#Shorten print() to p()
-p=print
 
 #Set the title of the TK window
-p("Setting title...")
+print("Setting title...")
 master.wm_title("AirChat 1.2")
-
 
 
 #Define the handler
@@ -90,6 +68,8 @@ def listen(bytes,ARG):
 		DAT = str(s.recv(bytes))
 		DAT = DAT.replace("'","").replace("b","",2).replace('"',"").replace("""\\\\""","""\"""")
 		DAT = DAT.replace('"',"")
+		if DAT == "<Alert> Username Taken. Reseting username to hostname...":
+			pass
 		text.config(state=NORMAL)
 		text.insert(END,DAT)
 		text.insert(END,"\n")
@@ -107,41 +87,62 @@ def callback(event):
 	text.config(state=DISABLED)
 	E1.delete(0, END)
 
+#Define the function to connect to the server
+def Connect():
+	while True:
+		try:
+			ip = tkinter.simpledialog.askstring('ChatServer','Enter the ChatServer IP:')
+			s.connect((ip,65000)) #Connect to the server on port 65000
+			break
+		except:
+			tkinter.messagebox.showerror("ConnectError","Can't connect!") #Cannot connect, reconnect or exit?
+			ss = tkinter.messagebox.askyesno("Runtime Error","Would you like to exit?")
+			if ss == True:
+				sys.exit(0) #Exit
+			else:
+				pass #Reconnect
+
+def GetUser():
+	Name = tkinter.simpledialog.askstring('Username','Enter your username here:')
+
+	#Send it to the server
+	s.send(("~"+Name).encode('utf-8'))
+	print("Done...")
+
+def PackWidgets(textW, scrlW, EntryW):
+	textW.pack(side=LEFT, fill=BOTH)
+	scrlW.pack(side=Right, fill=BOTH)
+	EntryW.pack(side=Bottom, fill=X)
+	
+def RunApp(root, textWidget, scrlWidget, entryWidget):
+	Connect() #Connect to server
+	GetUser() #Get username
+	PackWidgets(textWidget, scrlWidget, entryWidget) #Pack the widgets
+	#Show the window and run the app!
+	root.update()
+	root.deiconify()
+	thread.start_new_thread(listen, (1024, ''))
+	root.mainloop()
+
 #Create an entry widget to enter the chat text into
 E1 = Entry(master, bd =5)
 #Press enter to send text
 E1.bind('<Return>', callback)
-E1.pack(side = BOTTOM,fill=X)
 
 #Create the panel of text where the chat will be shown
-text= CustomText(master,bd = 5)
+text= CustomText(master,bd = 5, font="Calibri")
 text.config(state=DISABLED)
-text.pack(side=LEFT,fill=BOTH)
 
 #Create a scrollbar for the text window
 scrl = Scrollbar(master, command=text.yview,orient=VERTICAL,bd = 3)
-scrl.pack(side=RIGHT,fill=BOTH)
-
 text.config(yscrollcommand=scrl.set)
+
 print("connect!")
-
-#Ask the user for their username
-Name = tkinter.simpledialog.askstring('Username','Enter your username here:')
-
-#Send it to the server
-s.send(("~"+Name).encode('utf-8'))
-print("Done...")
-
-#Get the server's address and details
-p(s.getpeername())
 
 #Define some colours
 text.tag_configure("usrname", foreground = "#00CC00")
 text.tag_configure("alert", foreground = "#B80000")
 text.tag_configure("owntext", foreground = "#363636")
 
-#Start listening for chat
-thread.start_new_thread(listen, (1024, ''))
+RunApp(master, text, scrl, E1)
 
-#Run the client!
-mainloop()
