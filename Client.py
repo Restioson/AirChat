@@ -60,22 +60,29 @@ master.withdraw()
 print("Setting title...")
 master.wm_title("AirChat 1.2")
 
+#Make DAT into a global
+DAT = ''
 
 #Define the handler
 def listen(bytes,ARG):
-	p('listening for data...')
+	print('listening for data...')
 	while True:
 		DAT = str(s.recv(bytes))
-		DAT = DAT.replace("'","").replace("b","",2).replace('"',"").replace("""\\\\""","""\"""")
-		DAT = DAT.replace('"',"")
-		if DAT == "<Alert> Username Taken. Reseting username to hostname...":
-			pass
-		text.config(state=NORMAL)
-		text.insert(END,DAT)
-		text.insert(END,"\n")
-		text.highlight_pattern("(<.*?>)", "usrname",regexp=True)
-		text.highlight_pattern("(<Alert>)","alert",regexp=True)
-		text.config(state=DISABLED)
+
+#Update the text window, as must be done in MAIN THREAD	
+def update():
+		if Dat != '':
+			#Format the data, removing unwanted characters
+			DAT = DAT.replace("'","").replace("b","",2).replace('"',"").replace("""\\\\""","""\"""")
+			DAT = DAT.replace('"',"")
+			
+			
+			text.config(state=NORMAL)
+			text.insert(END,DAT)
+			text.insert(END,"\n")
+			text.highlight_pattern("(<.*?>)", "usrname",regexp=True)
+			text.highlight_pattern("(<Alert>)","alert",regexp=True)
+			text.config(state=DISABLED)
 
 #Define the "send" button's function
 def callback(event):
@@ -111,8 +118,8 @@ def GetUser():
 
 def PackWidgets(textW, scrlW, EntryW):
 	textW.pack(side=LEFT, fill=BOTH)
-	scrlW.pack(side=Right, fill=BOTH)
-	EntryW.pack(side=Bottom, fill=X)
+	scrlW.pack(side=RIGHT, fill=BOTH)
+	EntryW.pack(side=BOTTOM, fill=X)
 	
 def RunApp(root, textWidget, scrlWidget, entryWidget):
 	Connect() #Connect to server
