@@ -68,7 +68,6 @@ def listen(bytes,ARG):
 	print('listening for data...')
 	while True:
 		DAT = str(s.recv(bytes))
-
 #Update the text window, as must be done in MAIN THREAD	
 def update():
 		if Dat != '':
