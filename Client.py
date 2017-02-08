@@ -49,7 +49,8 @@ class CustomText(Text):
 
 #Create a socket
 s = socket.socket()
-s = ssl.wrap_socket(s)
+#
+#s = ssl.wrap_socket(s)
 
 #Create (and hide) a TK window
 master = Tk()
@@ -65,7 +66,9 @@ DAT = ''
 
 #Define the handler
 def listen(bytes,ARG):
+	
 	print('listening for data...')
+	
 	while True:
 		DAT = str(s.recv(bytes))
 
@@ -100,6 +103,7 @@ def Connect():
 		try:
 			ip = tkinter.simpledialog.askstring('ChatServer','Enter the ChatServer IP:')
 			s.connect((ip,65000)) #Connect to the server on port 65000
+			print("Connected!")
 			break
 		except:
 			tkinter.messagebox.showerror("ConnectError","Can't connect!") #Cannot connect, reconnect or exit?
